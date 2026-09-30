@@ -1,0 +1,32 @@
+name: CI
+
+# Runs the type check, the tests and a production build on every push and pull request, and every
+# night (01:07 IST) so a test that starts failing on its own is noticed the next morning, not weeks
+# later. Free on GitHub. No secrets and no database needed.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: '37 19 * * *'
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    env:
+      # Deliberately unreachable: the build must never touch a real database.
+      DATABASE_URL: postgresql://build:build@unreachable.invalid:5432/build?schema=public
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npm run prisma:generate
+      - run: npm run typecheck
+      - run: npm test
+      - if: github.event_name != 'schedule'
+        run: npm run build

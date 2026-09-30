@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: school-safety-db
+    environment:
+      POSTGRES_USER: nucleus
+      POSTGRES_PASSWORD: nucleus
+      POSTGRES_DB: school_safety
+    ports:
+      # Host 5454 -> container 5432.
+      - "5454:5432"
+    volumes:
+      - school-safety-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nucleus -d school_safety"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  school-safety-pgdata:

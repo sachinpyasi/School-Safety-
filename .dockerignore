@@ -1,0 +1,19 @@
+# Keep the build context small and keep secrets / real data OUT of the image.
+node_modules
+.next
+.git
+.gitignore
+
+# Real student data is never baked in.
+data/real
+
+# Secrets — provided via env at run time, never copied in.
+.env
+.env.*
+*.pem
+
+# Local cruft
+coverage
+*.tsbuildinfo
+npm-debug.log*
+.DS_Store

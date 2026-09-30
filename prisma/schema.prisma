@@ -1,0 +1,77 @@
+// School Safety HQ — the interim prototype (school-safety/). First page: POSH / POCSO.
+//
+// Four small tables. The record itself is PORT-PLAN A4's "small POSH-specific table with the
+// counts", deliberately outside the SSHQ inspection engine, so it folds into nucleus as that table
+// and nothing else. The other three are the estate's rights shape and its audit trail.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// One unit's training record under one Act for one academic year. The row's identity is
+/// (year, act, unit), exactly the legacy sheet's. `null` counts mean "not entered yet", which is
+/// NOT the same as 0, and the page keeps the two apart as the sheet did.
+model PoshRecord {
+  id             String   @id @default(cuid())
+  /// The academic year by its starting calendar year: 2026 = Jun-2026 to May-2027.
+  year           Int
+  /// 'POSH' | 'POCSO' (engine/posh.ts POSH_ACTS). A validated string, not an enum, so a third Act
+  /// is a code change, not a migration.
+  act            String
+  /// 'FSK' | 'FWGS' | 'FSM' | 'FALH' | 'FPV' | 'FPA' | 'GROUP' (engine/posh.ts POSH_UNITS).
+  unit           String
+  totalEmployees Int?
+  completed      Int?
+  /// 'YYYY-MM-DD'. A string, not a DateTime: it is a calendar day with no time and no zone, and
+  /// every label is built from the string (docs/RULES.md §Dates).
+  lastTraining   String?
+  comments       String?
+  updatedBy      String
+  updatedAt      DateTime @updatedAt
+  createdAt      DateTime @default(now())
+
+  @@unique([year, act, unit])
+  @@index([year])
+}
+
+/// A person who has been granted something. Identity split from grant, so an email lives in one place.
+model AppUser {
+  id     String         @id @default(cuid())
+  email  String         @unique
+  name   String
+  rights AppUserRight[]
+}
+
+/// A grant row's EXISTENCE is the permission (docs/RULES.md §Rights). `unit: null` = every
+/// unit, present and future. Deliberately no @@unique([userId, unit]): Postgres does not treat NULL
+/// as equal to itself, so it could not dedupe the all-units grant. lib/rights.ts dedupes instead.
+model AppUserRight {
+  id        String   @id @default(cuid())
+  user      AppUser  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  unit      String?
+  grantedBy String?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+/// The audit trail (lib/audit.ts writes, lib/activity.ts + /activity read). The actor is always the
+/// real signed-in person. `detail` carries counts and codes, never a person's data beyond an email.
+model AuditEvent {
+  id         String   @id @default(cuid())
+  actorEmail String
+  actorName  String
+  action     String
+  subject    String?
+  detail     Json?
+  at         DateTime @default(now())
+
+  @@index([at])
+  @@index([actorEmail, at])
+}

@@ -1,0 +1,28 @@
+# Render blueprint — tells Render how to run this app, so setting it up is "connect the repo, fill
+# in five settings". Every push to `main` redeploys automatically (autoDeploy).
+#
+# Free plan: the app sleeps after ~15 minutes with no visitors and takes about a minute to wake.
+# The database is NOT here: Render's free database is deleted after 30 days, so it lives on Neon
+# (free, permanent) and its address goes in DATABASE_URL. README.md §6 has the steps.
+services:
+  - type: web
+    name: school-safety
+    runtime: docker
+    plan: free
+    region: singapore
+    branch: main
+    autoDeploy: true
+    healthCheckPath: /api/health
+    envVars:
+      - key: DATABASE_URL
+        sync: false # paste Neon's connection string when Render asks
+      - key: AUTH_GOOGLE_ID
+        sync: false
+      - key: AUTH_GOOGLE_SECRET
+        sync: false
+      - key: AUTH_URL
+        sync: false # https://<the address Render gives the app>
+      - key: AUTH_SECRET
+        generateValue: true # Render makes a random one
+      - key: RIGHTS_ADMIN_EMAILS
+        value: sachin.pyasi@fountainheadschools.org
