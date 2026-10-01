@@ -88,7 +88,7 @@ npm install
 npm run db:up        # local database on port 5454
 npm run db:deploy    # creates the tables
 npm run dev          # http://localhost:4900, signed in as a pretend admin
-npm test             # 81 tests, no database needed
+npm test             # 87 tests, no database needed
 ```
 
 ## 6. Putting it online (free)
@@ -106,11 +106,20 @@ The settings Render needs (you paste them into Render, never into this repo):
 
 | Setting | What it is |
 | --- | --- |
-| `DATABASE_URL` | from Neon, step 1 |
+| `DATABASE_URL` | from Neon, step 1, with **connection pooling OFF**. It looks like `postgresql://…@ep-….neon.tech/neondb?sslmode=require&channel_binding=require` (no `-pooler` in it). |
 | `AUTH_URL` | the app's address from Render, step 2 |
 | `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET` | from Google Cloud, step 3. **Without them the live app refuses everyone**, on purpose. |
 | `AUTH_SECRET` | Render makes this one itself |
 | `RIGHTS_ADMIN_EMAILS` | administrators, comma-separated. Already set to you. |
+
+Before AUTH_GOOGLE_ID is set, the live app answers only `/api/health` and refuses every page
+(503). That is on purpose: it never runs without sign-in.
+
+What Render does on every start (`scripts/start.sh`): updates the database's tables
+(`prisma migrate deploy`, tried 3 times in case Neon is still waking up), then starts the app. If the
+database cannot be reached, the deploy fails with a plain message in Render's **Logs** instead of
+going live half-working. Checked on 01-Oct-2026 with only the six settings above and a Neon-style
+connection (SSL and password required).
 
 Good to know about free Render: after about 15 minutes with no visitors the app sleeps, and the next
 visit takes about a minute. About $7 a month removes that, whenever you want.
@@ -141,7 +150,7 @@ Not done yet. Two ways:
 | `lib/auth/` | Google sign-in and the allowed school email domains |
 | `prisma/schema.prisma` | the database tables: `PoshRecord`, `AppUser`, `AppUserRight`, `AuditEvent` |
 | `engine/*.test.ts`, `tests/` | the automated tests (run by GitHub on every change: `.github/workflows/ci.yml`) |
-| `render.yaml`, `Dockerfile` | how Render runs the app |
+| `render.yaml`, `Dockerfile`, `scripts/start.sh` | how Render builds and starts the app |
 | `docs/` | the rules, and what the old portal's pages do |
 
 ## 9. Change log
@@ -151,3 +160,4 @@ Not done yet. Two ways:
 | 26-Sep-2026 | Built in `vardan-kabra/nucleus-prototypes/school-safety/`: the six old pages written up, then the POSH / POCSO page with sign-in, per-unit edit rights, Activity and CSV. |
 | 30-Sep-2026 | **Moved to this repo, with every link to other people's repos and accounts removed**, so nothing waits on anyone. Administrator default is now Sachin only. Added Render set-up (`render.yaml`), GitHub tests (`ci.yml`) and `docs/RULES.md`. Next-page order set. |
 | 01-Oct-2026 | Loading dots (blue, red, yellow, with "Loading…") while a page loads; they fade instead of bounce for people who turn motion off. |
+| 01-Oct-2026 | Ready to go online: `render.yaml` uses Render's current `autoDeployTrigger: commit`; start-up moved to `scripts/start.sh` (retries the database while Neon wakes, refuses to start without `DATABASE_URL`, warns about Neon's pooled address). Tested with a Neon-style SSL connection. Tests for the deploy settings. |

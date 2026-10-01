@@ -1,5 +1,6 @@
 # Render blueprint — tells Render how to run this app, so setting it up is "connect the repo, fill
-# in five settings". Every push to `main` redeploys automatically (autoDeploy).
+# in five settings". Every push to `main` redeploys automatically (autoDeployTrigger: commit; the
+# older `autoDeploy: true` is deprecated).
 #
 # Free plan: the app sleeps after ~15 minutes with no visitors and takes about a minute to wake.
 # The database is NOT here: Render's free database is deleted after 30 days, so it lives on Neon
@@ -8,14 +9,15 @@ services:
   - type: web
     name: school-safety
     runtime: docker
+    dockerfilePath: ./Dockerfile
     plan: free
     region: singapore
     branch: main
-    autoDeploy: true
+    autoDeployTrigger: commit # redeploy on every push to main
     healthCheckPath: /api/health
     envVars:
       - key: DATABASE_URL
-        sync: false # paste Neon's connection string when Render asks
+        sync: false # paste Neon's connection string when Render asks: pooling OFF, ends in sslmode=require
       - key: AUTH_GOOGLE_ID
         sync: false
       - key: AUTH_GOOGLE_SECRET

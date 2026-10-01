@@ -31,6 +31,6 @@ RUN export DATABASE_URL="postgresql://build:build@localhost:5432/build?schema=pu
 ENV NODE_ENV=production
 EXPOSE 4900
 
-# On every start: apply pending migrations (idempotent), then serve. Honour $PORT when the platform
-# sets one (Render and Railway inject PORT); fall back to 4900.
-CMD ["sh", "-c", "npx prisma migrate deploy && npx next start -H 0.0.0.0 -p ${PORT:-4900}"]
+# On every start: apply pending migrations (idempotent, retried while Neon wakes up), then serve on
+# $PORT (Render sets it) or 4900. The steps and why: scripts/start.sh.
+CMD ["sh", "scripts/start.sh"]
