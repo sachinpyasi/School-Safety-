@@ -9,7 +9,7 @@ old portal keeps working until every page is replaced.
 | **Owner** | Sachin Pyasi |
 | **Status** | First page (POSH / POCSO) built and tested. **Not online yet** (see §6). No real data yet. |
 | **Depends on** | Nobody. Your own GitHub, Render, Neon and Google accounts only. |
-| **Last updated** | 30-Sep-2026 |
+| **Last updated** | 01-Oct-2026 |
 
 ---
 
@@ -20,6 +20,9 @@ old portal keeps working until every page is replaced.
 | **POSH / POCSO** | Anyone signed in can **see** it. Only people given rights can **change** a unit. | All 7 units (FSK, FWGS, FSM, FALH, FP Vesu, FP Adajan, Group Operations) for POSH or POCSO, in one academic year (June to May). Each shows total employees, how many are trained, the last training date, when renewal is due, and a status. Totals across all units at the top. **Download CSV** button. |
 | **Who can edit** | Anyone can see the list. Only administrators can change it. | Give a person edit rights for one unit or every unit, or take them away. Search box. |
 | **Activity** | Administrators see everyone; everyone else sees only themselves. | Who signed in, and every change made. |
+
+While a page loads you see three bouncing dots (blue, red, yellow) and "Loading…". On a device set to
+reduce motion they fade instead of bouncing.
 
 ### The status each unit shows
 
@@ -85,7 +88,7 @@ npm install
 npm run db:up        # local database on port 5454
 npm run db:deploy    # creates the tables
 npm run dev          # http://localhost:4900, signed in as a pretend admin
-npm test             # 76 tests, no database needed
+npm test             # 81 tests, no database needed
 ```
 
 ## 6. Putting it online (free)
@@ -130,6 +133,7 @@ Not done yet. Two ways:
 | `app/(app)/posh/` | the POSH / POCSO page, save and delete, CSV download |
 | `app/(app)/rights/` | the Who can edit page |
 | `app/(app)/activity/` | the Activity page |
+| `app/_Loader.tsx`, `app/loading.tsx`, `app/(app)/loading.tsx` | the loading dots |
 | `app/login/`, `app/logout/` | sign-in and sign-out |
 | `engine/posh.ts` | **the POSH rules**: statuses, due dates, totals, what counts as a valid edit, CSV |
 | `engine/rights.ts` | who may edit which unit |
@@ -146,3 +150,4 @@ Not done yet. Two ways:
 | --- | --- |
 | 26-Sep-2026 | Built in `vardan-kabra/nucleus-prototypes/school-safety/`: the six old pages written up, then the POSH / POCSO page with sign-in, per-unit edit rights, Activity and CSV. |
 | 30-Sep-2026 | **Moved to this repo, with every link to other people's repos and accounts removed**, so nothing waits on anyone. Administrator default is now Sachin only. Added Render set-up (`render.yaml`), GitHub tests (`ci.yml`) and `docs/RULES.md`. Next-page order set. |
+| 01-Oct-2026 | Loading dots (blue, red, yellow, with "Loading…") while a page loads; they fade instead of bounce for people who turn motion off. |
