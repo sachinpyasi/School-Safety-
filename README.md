@@ -7,9 +7,9 @@ old portal keeps working until every page is replaced.
 | | |
 | --- | --- |
 | **Owner** | Sachin Pyasi |
-| **Status** | First page (POSH / POCSO) built and tested. **Not online yet** (see §6). No real data yet. |
+| **Status** | First page (POSH / POCSO) built and tested. **Online at <https://school-safety.onrender.com>** (Render + Neon, Singapore) since 03-Oct-2026; Google sign-in being set up, so every page is locked until then. No real data yet. |
 | **Depends on** | Nobody. Your own GitHub, Render, Neon and Google accounts only. |
-| **Last updated** | 01-Oct-2026 |
+| **Last updated** | 03-Oct-2026 |
 
 ---
 
@@ -93,8 +93,8 @@ npm test             # 87 tests, no database needed
 
 ## 6. Putting it online (free)
 
-**Not done yet.** Three free accounts, all in your name. Claude will walk you through each one,
-click by click.
+**Steps 1 and 2 done (03-Oct-2026).** The app is at **<https://school-safety.onrender.com>**, its database
+on Neon in Singapore. Step 3 (Google sign-in) is next.
 
 | Step | Service | What for | Result you send to Claude |
 | --- | --- | --- | --- |
@@ -161,3 +161,4 @@ Not done yet. Two ways:
 | 30-Sep-2026 | **Moved to this repo, with every link to other people's repos and accounts removed**, so nothing waits on anyone. Administrator default is now Sachin only. Added Render set-up (`render.yaml`), GitHub tests (`ci.yml`) and `docs/RULES.md`. Next-page order set. |
 | 01-Oct-2026 | Loading dots (blue, red, yellow, with "Loading…") while a page loads; they fade instead of bounce for people who turn motion off. |
 | 01-Oct-2026 | Ready to go online: `render.yaml` uses Render's current `autoDeployTrigger: commit`; start-up moved to `scripts/start.sh` (retries the database while Neon wakes, refuses to start without `DATABASE_URL`, warns about Neon's pooled address). Tested with a Neon-style SSL connection. Tests for the deploy settings. |
+| 03-Oct-2026 | **Online**: Neon project `school-safety` (AWS Singapore) and Render service `school-safety` (Singapore) created; first deploy healthy at <https://school-safety.onrender.com/api/health>. |
