@@ -7,9 +7,9 @@ old portal keeps working until every page is replaced.
 | | |
 | --- | --- |
 | **Owner** | Sachin Pyasi |
-| **Status** | First page (POSH / POCSO) built and tested. **Online at <https://school-safety.onrender.com>** (Render + Neon, Singapore) since 03-Oct-2026; Google sign-in being set up, so every page is locked until then. No real data yet. |
+| **Status** | First page (POSH / POCSO) built and tested. **Live at <https://school-safety.onrender.com>** with Google sign-in (06-Oct-2026). Next: bring the old portal's POSH numbers across (§7). No real data yet. |
 | **Depends on** | Nobody. Your own GitHub, Render, Neon and Google accounts only. |
-| **Last updated** | 03-Oct-2026 |
+| **Last updated** | 06-Oct-2026 |
 
 ---
 
@@ -93,8 +93,10 @@ npm test             # 87 tests, no database needed
 
 ## 6. Putting it online (free)
 
-**Steps 1 and 2 done (03-Oct-2026).** The app is at **<https://school-safety.onrender.com>**, its database
-on Neon in Singapore. Step 3 (Google sign-in) is next.
+**All three steps done (06-Oct-2026).** The app is at **<https://school-safety.onrender.com>**, its database
+on Neon in Singapore, sign-in through the Google Cloud project **School Safety HQ** (Internal: Fountainhead
+accounts only). All six settings below are set in Render. The Neon password and `AUTH_SECRET` were
+replaced on 06-Oct-2026 after appearing in a screenshot.
 
 | Step | Service | What for | Result you send to Claude |
 | --- | --- | --- | --- |
@@ -162,3 +164,4 @@ Not done yet. Two ways:
 | 01-Oct-2026 | Loading dots (blue, red, yellow, with "Loading…") while a page loads; they fade instead of bounce for people who turn motion off. |
 | 01-Oct-2026 | Ready to go online: `render.yaml` uses Render's current `autoDeployTrigger: commit`; start-up moved to `scripts/start.sh` (retries the database while Neon wakes, refuses to start without `DATABASE_URL`, warns about Neon's pooled address). Tested with a Neon-style SSL connection. Tests for the deploy settings. |
 | 03-Oct-2026 | **Online**: Neon project `school-safety` (AWS Singapore) and Render service `school-safety` (Singapore) created; first deploy healthy at <https://school-safety.onrender.com/api/health>. |
+| 06-Oct-2026 | **Google sign-in live.** Google Cloud project `School Safety HQ` (Internal) and its web client set up; all six Render settings in place; Neon password and `AUTH_SECRET` replaced. Signed in as administrator. Next: the old portal's POSH CSVs, then the import. |
