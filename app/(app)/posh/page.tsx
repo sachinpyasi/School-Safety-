@@ -95,6 +95,11 @@ export default async function PoshPage({
           <a className="btn ghost sm" href={`/posh/export?${qs({ year, act })}`}>
             Download CSV
           </a>
+          {user.isRightsAdmin && (
+            <a className="btn ghost sm" href="/posh/import">
+              Import from old portal
+            </a>
+          )}
         </div>
       </div>
 

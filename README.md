@@ -7,7 +7,7 @@ old portal keeps working until every page is replaced.
 | | |
 | --- | --- |
 | **Owner** | Sachin Pyasi |
-| **Status** | First page (POSH / POCSO) built and tested. **Live at <https://school-safety.onrender.com>** with Google sign-in (06-Oct-2026). Next: bring the old portal's POSH numbers across (§7). No real data yet. |
+| **Status** | POSH / POCSO built and tested, with **Import from old portal**. **Live at <https://school-safety.onrender.com>** with Google sign-in (06-Oct-2026). Next: import the old portal's real POSH files (§7). No real data yet. |
 | **Depends on** | Nobody. Your own GitHub, Render, Neon and Google accounts only. |
 | **Last updated** | 06-Oct-2026 |
 
@@ -18,6 +18,7 @@ old portal keeps working until every page is replaced.
 | Page | Who can use it | What it does |
 | --- | --- | --- |
 | **POSH / POCSO** | Anyone signed in can **see** it. Only people given rights can **change** a unit. | All 7 units (FSK, FWGS, FSM, FALH, FP Vesu, FP Adajan, Group Operations) for POSH or POCSO, in one academic year (June to May). Each shows total employees, how many are trained, the last training date, when renewal is due, and a status. Totals across all units at the top. **Download CSV** button. |
+| **Import from old portal** | Administrators only. | Upload the old portal's POSH / POCSO "⬇ CSV" files → a preview of exactly what will be saved → **Confirm**. Copies Year, Act, Unit, Total employees, Completed, Last training and Comments as they are. Never overwrites a record that is already here ("skipped, already here"). Refuses rows that don't make sense (unknown unit, trained above total, a date that doesn't exist) and says why. One Activity row per import, with counts. |
 | **Who can edit** | Anyone can see the list. Only administrators can change it. | Give a person edit rights for one unit or every unit, or take them away. Search box. |
 | **Activity** | Administrators see everyone; everyone else sees only themselves. | Who signed in, and every change made. |
 
@@ -88,7 +89,7 @@ npm install
 npm run db:up        # local database on port 5454
 npm run db:deploy    # creates the tables
 npm run dev          # http://localhost:4900, signed in as a pretend admin
-npm test             # 87 tests, no database needed
+npm test             # 105 tests, no database needed
 ```
 
 ## 6. Putting it online (free)
@@ -128,12 +129,24 @@ visit takes about a minute. About $7 a month removes that, whenever you want.
 
 ## 7. Bringing the old portal's POSH numbers across
 
-Not done yet. Two ways:
+**The import is built (06-Oct-2026); the real files have not been imported yet.**
 
-- **Best:** run `exportFrozenPosh` in the old portal's Apps Script (you requested access from JC on
-  29-Sep-2026). It makes an exact copy with a fingerprint.
-- **Quick:** the old portal's POSH page has a **⬇ CSV** button, one file per year and Act. Good for
-  testing now; the exact copy above should replace it before real use.
+1. On the old portal (tinyurl.com/fs-safety) → **POSH / POCSO**: for each year, **POSH → ⬇ CSV**, then
+   **POCSO → ⬇ CSV**.
+2. On this app, signed in as an administrator: **POSH / POCSO → Import from old portal** → choose the
+   files (several at once is fine) → **Show the preview**.
+3. Check the preview: every row says **will be saved**, **skipped, already here**, **skipped, empty**
+   or **refused** (with the reason). Then **Confirm**.
+
+What it copies and what it doesn't:
+
+| Column | |
+| --- | --- |
+| Year, Act, Unit, Total employees, Completed, Last training, Comments | copied exactly as written |
+| Pending, % completed, Status, Next due | ignored: this app works them out itself |
+
+Later, the old portal's exact export (`exportFrozenPosh`, with its fingerprint) can be checked against
+what was imported.
 
 ---
 
@@ -141,12 +154,13 @@ Not done yet. Two ways:
 
 | Folder / file | What is in it |
 | --- | --- |
-| `app/(app)/posh/` | the POSH / POCSO page, save and delete, CSV download |
+| `app/(app)/posh/` | the POSH / POCSO page, save and delete, CSV download, `import/` (import from old portal) |
 | `app/(app)/rights/` | the Who can edit page |
 | `app/(app)/activity/` | the Activity page |
 | `app/_Loader.tsx`, `app/loading.tsx`, `app/(app)/loading.tsx` | the loading dots |
 | `app/login/`, `app/logout/` | sign-in and sign-out |
 | `engine/posh.ts` | **the POSH rules**: statuses, due dates, totals, what counts as a valid edit, CSV |
+| `engine/posh-import.ts`, `lib/posh-import.ts` | **the import rules** (what is copied, skipped or refused, and why) and its saving |
 | `engine/rights.ts` | who may edit which unit |
 | `lib/posh.ts`, `lib/rights.ts` | saving and reading those in the database |
 | `lib/auth/` | Google sign-in and the allowed school email domains |
@@ -165,3 +179,4 @@ Not done yet. Two ways:
 | 01-Oct-2026 | Ready to go online: `render.yaml` uses Render's current `autoDeployTrigger: commit`; start-up moved to `scripts/start.sh` (retries the database while Neon wakes, refuses to start without `DATABASE_URL`, warns about Neon's pooled address). Tested with a Neon-style SSL connection. Tests for the deploy settings. |
 | 03-Oct-2026 | **Online**: Neon project `school-safety` (AWS Singapore) and Render service `school-safety` (Singapore) created; first deploy healthy at <https://school-safety.onrender.com/api/health>. |
 | 06-Oct-2026 | **Google sign-in live.** Google Cloud project `School Safety HQ` (Internal) and its web client set up; all six Render settings in place; Neon password and `AUTH_SECRET` replaced. Signed in as administrator. Next: the old portal's POSH CSVs, then the import. |
+| 06-Oct-2026 | **Import from old portal** (administrators): upload the old POSH / POCSO CSVs → preview → Confirm. Copies the seven raw columns exactly, ignores the computed ones, never overwrites, refuses rows that don't make sense with the reason, skips empty placeholder rows, one Activity row per import with counts. 18 new tests. Preview laid out as cards so it reads on a phone. |

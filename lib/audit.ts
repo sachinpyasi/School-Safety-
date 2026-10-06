@@ -19,6 +19,8 @@ export type AuditAction =
   | 'sign_in'
   /** One unit's POSH / POCSO record was saved (created or changed). */
   | 'posh.save'
+  /** Records copied from the old portal's CSV files. Admin only. One row per import, with counts. */
+  | 'posh.import'
   /** A whole academic year of POSH / POCSO records was deleted. Admin only. */
   | 'posh.delete_year'
   /** A grant to edit a unit (or every unit) was given / taken away. */

@@ -123,6 +123,7 @@ export function buildPresence(times: readonly Date[], people: number, days: numb
 
 const ACTION_SHORT: Record<string, string> = {
   'posh.save': 'save',
+  'posh.import': 'import',
   'posh.delete_year': 'delete year',
   'right.grant': 'grant',
   'right.revoke': 'revoke',
@@ -131,6 +132,7 @@ const ACTION_SHORT: Record<string, string> = {
 
 const ACTION_LABEL: Record<string, string> = {
   'posh.save': 'Saved a POSH / POCSO record',
+  'posh.import': 'Imported POSH / POCSO records from the old portal',
   'posh.delete_year': 'Deleted a whole POSH / POCSO year',
   'right.grant': 'Gave someone edit rights',
   'right.revoke': 'Took away edit rights',
@@ -156,6 +158,7 @@ export type ActionClass = 'money' | 'pii' | 'access' | 'destructive' | 'write' |
  */
 const ACTION_CLASS: Record<AuditAction, ActionClass> = {
   'posh.save': 'write',
+  'posh.import': 'write',
   'posh.delete_year': 'destructive',
   'right.grant': 'access',
   'right.revoke': 'access',
